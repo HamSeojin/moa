@@ -18,16 +18,16 @@ export function renderRecap(el, dateKey = todayKey()) {
     <h2><span class="hl">회고</span> 카드</h2>
     <div class="row" style="justify-content:center;margin:4px 0 10px">
       <button class="icon-btn" id="rc-prev" aria-label="이전 날">◀</button>
-      <div class="hand" style="font-size:24px;margin:0 12px">${dateKey.slice(5).replace('-', '월 ')}일</div>
+      <div class="date-stamp" style="margin:0 16px">${dateKey.slice(5).replace('-', '월 ')}일</div>
       <button class="icon-btn" id="rc-next" aria-label="다음 날">▶</button>
     </div>
     <div class="sticker tape" id="rc-card">
       ${saved ? `
-        <div class="hand" style="font-size:24px">${saved.summary}</div>
-        <ul class="highlight hand" style="font-size:20px">${saved.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>
+        <div class="hand">${saved.summary}</div>
+        <ul class="highlight">${saved.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>
         <div class="hand-note">기록 ${entries.length}개로 만든 카드 ✿</div>
       ` : entries.length ? `
-        <div class="hand">아직 이 날의 카드가 없어.</div>
+        <div>아직 이 날의 카드가 없어.</div>
         <button class="btn btn-block" id="rc-make">오늘 카드 만들기 🖼️</button>
       ` : `
         <div class="empty-doodle"><span class="big">🖼️</span><div class="hand">이 날은 기록이 비어 있어.<br>빈 날은 없다는 거, 알지?</div></div>
@@ -36,7 +36,7 @@ export function renderRecap(el, dateKey = todayKey()) {
     <div id="rc-msg" class="muted"></div>
     <div class="spacer"></div>
     <div class="sticker tape tape-mint">
-      <div class="hand" style="font-size:21px">주간 회고</div>
+      <div class="card-title">주간 회고</div>
       <div class="hand-note">이번 주 기록으로 한 장의 카드를 만들어봐!</div>
       <div class="spacer"></div>
       <button class="btn btn-mint btn-block" id="rc-week">이번 주 카드 만들기</button>
@@ -103,8 +103,8 @@ export function renderRecap(el, dateKey = todayKey()) {
       }
       out.innerHTML = `
         <div class="spacer"></div>
-        <div class="hand" style="font-size:23px">${card.summary}</div>
-        <ul class="highlight hand" style="font-size:20px">${card.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>
+        <div class="hand">${card.summary}</div>
+        <ul class="highlight">${card.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>
         ${card.habitNote ? `<div class="hand-note">${card.habitNote}</div>` : ''}`;
     } catch (e) { out.innerHTML = '<div class="muted">실패: ' + e.message + '</div>'; }
   });

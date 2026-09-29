@@ -75,7 +75,7 @@ export function renderJot(el) {
         photos.push(dataUrl);
         const img = document.createElement('img');
         img.src = dataUrl;
-        img.style.cssText = 'width:72px;height:72px;object-fit:cover;border:2.5px solid var(--ink);border-radius:12px;transform:rotate(-2deg)';
+        img.style.cssText = 'width:72px;height:72px;object-fit:cover;border:4px solid var(--white);border-radius:2px;box-shadow:0 1px 3px rgba(59,52,54,.1);transform:rotate(-1deg)';
         box.appendChild(img);
       } catch { msg.textContent = '사진을 읽지 못했어.'; }
     }
@@ -128,7 +128,7 @@ export function renderJot(el) {
     preview.innerHTML = `
       <div class="sticker tape tape-butter">
         <span class="src-badge src-manual">끄적</span>
-        <div class="hand" style="font-size:21px">${(saved.polished || '').replace(/\[\[([^\]]+)\]\]/g, '[[ $1 ]]')}</div>
+        <div class="hand">${(saved.polished || '').replace(/\[\[([^\]]+)\]\]/g, '[[ $1 ]]')}</div>
         ${(saved.photos || []).map((p) => `<img src="${p}" class="daycard-photo">`).join('')}
         <div style="margin-top:6px">
           ${(saved.tags || []).map((t) => `<span class="tag">${t}</span>`).join('')}

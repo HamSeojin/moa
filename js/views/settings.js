@@ -9,7 +9,7 @@ export function renderSettings(el) {
     <h2><span class="hl">설정</span></h2>
 
     <div class="sticker tape">
-      <div class="hand" style="font-size:21px">🧠 LLM 제공자</div>
+      <div class="card-title">🧠 LLM 제공자</div>
       <div class="spacer"></div>
       <div class="radio-cards">
         ${Object.entries(PROVIDERS).map(([key, p]) => `
@@ -43,7 +43,7 @@ export function renderSettings(el) {
     </div>
 
     <div class="sticker tape tape-sky">
-      <div class="hand" style="font-size:21px">🔗 Google 연동</div>
+      <div class="card-title">🔗 Google 연동</div>
       <div class="field">
         <label>OAuth 클라이언트 ID</label>
         <input id="set-gid" class="input mono" placeholder="xxx.apps.googleusercontent.com" value="${s.googleClientId || ''}">
@@ -52,7 +52,7 @@ export function renderSettings(el) {
     </div>
 
     <div class="sticker tape tape-mint">
-      <div class="hand" style="font-size:21px">💾 데이터</div>
+      <div class="card-title">💾 데이터</div>
       <div class="spacer"></div>
       <div class="row">
         <button class="btn btn-sky" id="set-export">내보내기</button>

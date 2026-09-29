@@ -23,7 +23,7 @@ export async function renderToday(el) {
   const entries = store.entriesByDate(key);
 
   el.innerHTML = `
-    <h2><span class="hl">오늘,</span> ${key.slice(5).replace('-', '월 ')}일</h2>
+    <h2><span class="hl">오늘</span><span class="date-stamp">${key.slice(5).replace('-', '월 ')}일</span></h2>
     <div class="sticker tape" id="today-summary">
       <div class="hand-note">하루 요약 만드는 중... ✎</div>
     </div>
@@ -48,13 +48,13 @@ export async function renderToday(el) {
         json: true,
       });
       const j = JSON.parse(out);
-      summaryEl.innerHTML = `<div class="hand" style="font-size:23px">${j.summary}</div>
+      summaryEl.innerHTML = `<div class="hand">${j.summary}</div>
         <div class="hand-note">오늘 기록 ${entries.length}개 · 어제보다 ${entries.length >= 3 ? '알차게' : '가볍게'} 쌓이는 중</div>`;
     } else if (!entries.length) {
-      summaryEl.innerHTML = `<div class="hand">아직 오늘의 기록이 비어 있어. 빈 날은 없게 만들자 ✎</div>
+      summaryEl.innerHTML = `<div>아직 오늘의 기록이 비어 있어. 빈 날은 없게 만들자 ✎</div>
         <div class="hand-note">끄적 탭에서 아무렇게나 한 줄 써봐!</div>`;
     } else {
-      summaryEl.innerHTML = `<div class="hand">오늘 기록 ${entries.length}개 쌓이는 중 ✎</div>
+      summaryEl.innerHTML = `<div>오늘 기록 ${entries.length}개 쌓이는 중 ✎</div>
         <div class="hand-note">설정에서 LLM 키를 입력하면 예쁜 하루 요약을 만들어줘!</div>`;
     }
   } catch (e) {
@@ -73,7 +73,7 @@ export async function renderToday(el) {
           <span class="src-badge ${e.suggest ? 'src-suggest' : e.type === 'import' ? 'src-import' : 'src-manual'}">
             ${e.suggest ? '제안' : e.type === 'import' ? '자동' : '끄적'}
           </span>
-          <div class="hand" style="font-size:20px">${renderLinks(e.polished || e.raw)}</div>
+          <div class="hand">${renderLinks(e.polished || e.raw)}</div>
           ${(e.photos || []).map((p) => `<img src="${p}" class="daycard-photo" loading="lazy">`).join('')}
           <div style="margin-top:6px">${tagHtml(e.tags)}${tagHtml(e.people, 'person')}${tagHtml(e.places, 'place')}</div>
           ${e.suggest ? `<div class="row" style="margin-top:8px">

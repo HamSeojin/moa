@@ -27,8 +27,6 @@ export function navigate(name) {
   document.querySelectorAll('.tab').forEach((t) =>
     t.classList.toggle('active', t.dataset.tab === name)
   );
-  document.querySelector('.app-header .icon-btn').style.transform =
-    name === 'settings' ? 'rotate(40deg)' : '';
   try {
     VIEWS[name].render(document.getElementById(VIEWS[name].el));
   } catch (e) {

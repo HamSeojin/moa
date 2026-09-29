@@ -37,11 +37,11 @@ export function renderExplore(el) {
     const bl = backlinks(node.label.replace(/^#/, ''));
     detail.innerHTML = `
       <div class="sticker tape tape-butter">
-        <div class="hand" style="font-size:21px">「${node.label}」 백링크 ${bl.length}개</div>
+        <div class="card-title">「${node.label}」 백링크 ${bl.length}개</div>
         ${bl.length ? bl.map((e) => `
-          <div class="tl-card" style="margin:8px 0;padding:10px;background:var(--paper);border:2px solid var(--ink);border-radius:12px">
+          <div class="tl-card" style="margin:8px 0;padding:16px 0 8px;border-top:1px solid var(--rule)">
             <div class="tl-time">${(e.date || '').slice(5)}</div>
-            <div class="hand" style="font-size:19px">${(e.polished || e.raw || '').slice(0, 80)}</div>
+            <div class="hand">${(e.polished || e.raw || '').slice(0, 80)}</div>
           </div>`).join('') : '<div class="hand-note">아직 이 이름을 언급한 기록이 없어.</div>'}
       </div>`;
   };
@@ -59,11 +59,11 @@ export function renderExplore(el) {
     ).slice(-20).reverse();
     box.innerHTML = hits.length ? `
       <div class="sticker">
-        <div class="hand" style="font-size:20px">${hits.length}개 찾았어!</div>
+        <div class="card-title">${hits.length}개 찾았어!</div>
         ${hits.map((e) => `
-          <div style="margin:10px 0;padding-bottom:10px;border-bottom:2px dashed var(--paper-deep)">
+          <div style="margin:10px 0;padding-bottom:10px;border-bottom:1px solid var(--rule)">
             <div class="tl-time">${(e.date || e.createdAt.slice(0, 10)).slice(5)}</div>
-            <div class="hand" style="font-size:19px">${(e.polished || e.raw || '').slice(0, 90)}</div>
+            <div class="hand">${(e.polished || e.raw || '').slice(0, 90)}</div>
           </div>`).join('')}
       </div>` : `<div class="hand-note">검색 결과가 없어. 다른 단어로?</div>`;
   });
