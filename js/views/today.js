@@ -74,6 +74,7 @@ export async function renderToday(el) {
             ${e.suggest ? '제안' : e.type === 'import' ? '자동' : '끄적'}
           </span>
           <div class="hand" style="font-size:20px">${renderLinks(e.polished || e.raw)}</div>
+          ${(e.photos || []).map((p) => `<img src="${p}" class="daycard-photo" loading="lazy">`).join('')}
           <div style="margin-top:6px">${tagHtml(e.tags)}${tagHtml(e.people, 'person')}${tagHtml(e.places, 'place')}</div>
           ${e.suggest ? `<div class="row" style="margin-top:8px">
             <button class="btn btn-mint btn-confirm" data-id="${e.id}" style="font-size:13px;padding:6px 14px">확정</button>
