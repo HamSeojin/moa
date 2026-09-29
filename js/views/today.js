@@ -1,0 +1,133 @@
+// 모아 — 오늘 탭 (타임라인)
+import { store, todayKey } from '../store.js';
+import { chat, isConfigured } from '../llm.js';
+import { PROMPTS } from '../prompts.js';
+import { fetchTodayEvents, fetchMailCandidates, googleClientId } from '../google.js';
+import { navigate } from '../app.js';
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function renderLinks(text = '') {
+  return text.replace(/\[\[([^\]]+)\]\]/g, '<a class="wikilink" href="#" data-wiki="$1">[[ $1 ]]</a>');
+}
+
+function tagHtml(list = [], cls = '') {
+  return list.map((t) => `<span class="tag ${cls}">${t}</span>`).join('');
+}
+
+export async function renderToday(el) {
+  const key = todayKey();
+  const entries = store.entriesByDate(key);
+
+  el.innerHTML = `
+    <h2><span class="hl">오늘,</span> ${key.slice(5).replace('-', '월 ')}일</h2>
+    <div class="sticker tape" id="today-summary">
+      <div class="hand-note">하루 요약 만드는 중... ✎</div>
+    </div>
+    <div class="row" style="margin:6px 0">
+      <button class="btn btn-sky" id="btn-cal" style="font-size:14px;padding:8px 16px">📅 캘린더 가져오기</button>
+      <button class="btn btn-butter" id="btn-mail" style="font-size:14px;padding:8px 16px">✉️ 메일 확인</button>
+    </div>
+    <div id="import-msg" class="muted"></div>
+    <div class="timeline" id="timeline"></div>
+    <div class="spacer"></div>
+    <button class="btn btn-block" id="btn-jot">✏️ 끄적으러 가기</button>
+  `;
+
+  // 요약
+  const summaryEl = el.querySelector('#today-summary');
+  try {
+    if (isConfigured() && entries.length) {
+      const text = entries.map((e) => e.polished || e.raw).join('\n');
+      const out = await chat({
+        system: PROMPTS.daily.system,
+        messages: [{ role: 'user', content: `오늘 기록:\n${text}\n\n위 형식의 JSON으로.` }],
+        json: true,
+      });
+      const j = JSON.parse(out);
+      summaryEl.innerHTML = `<div class="hand" style="font-size:23px">${j.summary}</div>
+        <div class="hand-note">오늘 기록 ${entries.length}개 · 어제보다 ${entries.length >= 3 ? '알차게' : '가볍게'} 쌓이는 중</div>`;
+    } else if (!entries.length) {
+      summaryEl.innerHTML = `<div class="hand">아직 오늘의 기록이 비어 있어. 빈 날은 없게 만들자 ✎</div>
+        <div class="hand-note">끄적 탭에서 아무렇게나 한 줄 써봐!</div>`;
+    } else {
+      summaryEl.innerHTML = `<div class="hand">오늘 기록 ${entries.length}개 쌓이는 중 ✎</div>
+        <div class="hand-note">설정에서 LLM 키를 입력하면 예쁜 하루 요약을 만들어줘!</div>`;
+    }
+  } catch (e) {
+    summaryEl.innerHTML = `<div class="hand-note">요약을 만들지 못했어. (${e.message})</div>`;
+  }
+
+  // 타임라인
+  const tl = el.querySelector('#timeline');
+  if (!entries.length) {
+    tl.innerHTML = `<div class="empty-doodle"><span class="big">🕊️</span><div class="hand">아직 비어 있어.<br>끄적 탭에서 첫 기록을 남겨봐!</div></div>`;
+  } else {
+    tl.innerHTML = entries.map((e) => `
+      <div class="tl-item">
+        <div class="tl-time">${fmtTime(e.createdAt)}</div>
+        <div class="sticker tl-card ${e.suggest ? 'tape-butter' : ''}" data-id="${e.id}">
+          <span class="src-badge ${e.suggest ? 'src-suggest' : e.type === 'import' ? 'src-import' : 'src-manual'}">
+            ${e.suggest ? '제안' : e.type === 'import' ? '자동' : '끄적'}
+          </span>
+          <div class="hand" style="font-size:20px">${renderLinks(e.polished || e.raw)}</div>
+          <div style="margin-top:6px">${tagHtml(e.tags)}${tagHtml(e.people, 'person')}${tagHtml(e.places, 'place')}</div>
+          ${e.suggest ? `<div class="row" style="margin-top:8px">
+            <button class="btn btn-mint btn-confirm" data-id="${e.id}" style="font-size:13px;padding:6px 14px">확정</button>
+            <button class="btn btn-ghost btn-drop" data-id="${e.id}" style="font-size:13px;padding:6px 14px">아니야</button>
+          </div>` : ''}
+        </div>
+      </div>`).join('');
+
+    el.querySelectorAll('.btn-confirm').forEach((b) =>
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        store.updateEntry(b.dataset.id, { suggest: false, confidence: 1 });
+        renderToday(el);
+      }));
+    el.querySelectorAll('.btn-drop').forEach((b) =>
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        store.removeEntry(b.dataset.id);
+        renderToday(el);
+      }));
+  }
+
+  el.querySelector('#btn-jot').addEventListener('click', () => navigate('jot'));
+
+  const msg = el.querySelector('#import-msg');
+  el.querySelector('#btn-cal').addEventListener('click', async () => {
+    if (!googleClientId()) { msg.textContent = '설정 탭에서 Google 클라이언트 ID를 먼저 입력해줘!'; return; }
+    msg.textContent = '캘린더 가져오는 중...';
+    try {
+      const items = await fetchTodayEvents();
+      const existing = new Set(store.entries().map((e) => e.sourceId).filter(Boolean));
+      let n = 0;
+      for (const it of items) {
+        if (existing.has(it.sourceId)) continue;
+        store.addEntry(it); n++;
+      }
+      msg.textContent = n ? `${n}개 일정을 가져왔어!` : '새 일정이 없어. 이미 다 있어!';
+      renderToday(el);
+    } catch (e) { msg.textContent = '가져오기 실패: ' + e.message; }
+  });
+
+  el.querySelector('#btn-mail').addEventListener('click', async () => {
+    if (!googleClientId()) { msg.textContent = '설정 탭에서 Google 클라이언트 ID를 먼저 입력해줘!'; return; }
+    msg.textContent = '메일 확인 중...';
+    try {
+      const items = await fetchMailCandidates();
+      const existing = new Set(store.entries().map((e) => e.sourceId).filter(Boolean));
+      let n = 0;
+      for (const it of items) {
+        if (existing.has(it.sourceId)) continue;
+        store.addEntry(it); n++;
+      }
+      msg.textContent = n ? `${n}개를 '제안'으로 가져왔어. 확정해줘!` : '새로운 메일 후보가 없어!';
+      renderToday(el);
+    } catch (e) { msg.textContent = '가져오기 실패: ' + e.message; }
+  });
+}
