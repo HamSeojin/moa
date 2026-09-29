@@ -1,6 +1,6 @@
 // 모아 — 설정 탭 (LLM 제공자 · 구글 · 데이터 관리)
 import { store } from '../store.js';
-import { PROVIDERS, currentProvider, todayUsage } from '../llm.js';
+import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js';
 
 export function renderSettings(el) {
   const s = store.settings();
@@ -39,6 +39,10 @@ export function renderSettings(el) {
         <label>Claude 모델</label>
         <input id="set-claude-model" class="input mono" value="${s.claudeModel || 'claude-sonnet-4-20250514'}">
       </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="set-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
+        <span id="set-test-msg" class="muted" style="font-size:14px"></span>
+      </div>
       <div class="hand-note">오늘 LLM 호출: ${todayUsage()}회</div>
     </div>
 
@@ -63,7 +67,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.0.0 · 2026-09-29</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.1.0 · 2026-09-30</div>
   `;
 
   const save = () => {
@@ -82,6 +86,21 @@ export function renderSettings(el) {
   el.querySelectorAll('input').forEach((i) => i.addEventListener('change', save));
 
   const msg = el.querySelector('#set-msg');
+  el.querySelector('#set-test').addEventListener('click', async () => {
+    save();
+    const btn = el.querySelector('#set-test');
+    const tmsg = el.querySelector('#set-test-msg');
+    btn.disabled = true;
+    tmsg.textContent = '확인 중...';
+    try {
+      await testConnection();
+      tmsg.textContent = '✅ 연결 성공!';
+    } catch (e) {
+      tmsg.textContent = '❌ ' + e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
   el.querySelector('#set-export').addEventListener('click', () => {
     save();
     const data = {

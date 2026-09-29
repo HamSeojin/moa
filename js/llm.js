@@ -51,3 +51,24 @@ function bumpUsage() {
 export function todayUsage() {
   return store.get('usage-' + new Date().toISOString().slice(0, 10), 0);
 }
+
+// 연결 테스트: 실제 제공자 경로로 최소 ping을 보내 키·프록시·CORS를 검증.
+// 사용량 카운트에는 포함하지 않는다.
+export async function testConnection() {
+  const settings = store.settings();
+  const name = currentProvider();
+  const provider = PROVIDERS[name];
+  const key = settings.apiKeys?.[name];
+  if (!key) throw new Error('API 키를 먼저 입력해줘!');
+  if (provider.needsProxy && !settings.claudeProxy)
+    throw new Error('프록시 URL을 먼저 입력해줘!');
+  await provider.call({
+    key,
+    proxy: settings.claudeProxy,
+    system: 'You are a connectivity test. Reply with only the word: ok',
+    messages: [{ role: 'user', content: 'ping' }],
+    json: false,
+    settings,
+  });
+  return true;
+}
