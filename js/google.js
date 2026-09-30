@@ -1,7 +1,7 @@
 // 모아 — Google 연동 (GIS OAuth → Calendar/Gmail 읽기)
 // 설정 탭에서 OAuth 클라이언트 ID를 입력해야 동작한다.
 
-import { store, todayKey } from './store.js?v=1.4.7';
+import { store, todayKey } from './store.js?v=1.4.8';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/gmail.readonly';
 let gisLoaded = false;
