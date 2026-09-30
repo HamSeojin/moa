@@ -1,5 +1,5 @@
 // 모아 — [[위키링크]] 파싱 · 엔티티 정규화 · 추출 결과 반영
-import { store, todayKey } from './store.js?v=1.4.7';
+import { store, todayKey } from './store.js?v=1.4.8';
 
 export function extractWikilinks(text = '') {
   const out = [];
