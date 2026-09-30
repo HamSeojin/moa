@@ -32,19 +32,31 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+html, body { height: 100%; }
+
 body {
   margin: 0;
   font-family: var(--font-body);
   font-size: 16px; line-height: 1.7;
   color: var(--ink);
   background: var(--paper) var(--grain);
-  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  /* 앱 셸: 헤더·뷰·탭바를 플렉스 컬럼으로 고정, 스크롤은 #views 안에서만.
+     iOS에서 position:fixed 하단바가 스크롤 후 화면 중간에 떠버리는 버그 회피. */
+  display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+#views {
+  flex: 1; min-height: 0;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 /* ---------- 헤더 ---------- */
 .app-header {
-  position: sticky; top: 0; z-index: 10;
+  flex: none;
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--s2) var(--s3) var(--s1);
   background: linear-gradient(var(--paper) 80%, rgba(251, 246, 238, 0));
@@ -72,7 +84,7 @@ body {
 
 /* ---------- 탭바 ---------- */
 .tabbar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  flex: none;
   display: flex;
   background: var(--paper) var(--grain);
   border-top: 1px solid var(--rule);
@@ -291,6 +303,37 @@ body {
 }
 .habit-row .icon-btn { border-color: transparent; opacity: .45; }
 .habit-row .icon-btn:hover { opacity: .9; }
+.habit-card { border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 4px; }
+.habit-card .habit-row { border-bottom: none; }
+.habit-week { display: flex; align-items: center; gap: 6px; padding: 2px 4px 2px 36px; }
+.hdot {
+  width: 26px; height: 26px; flex: none;
+  border: 1.5px solid var(--line); border-radius: 50%;
+  background: transparent; color: var(--ink-faint);
+  font-family: var(--font-body); font-size: 11px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.hdot.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.hdot.today { border-style: dashed; }
+.link-btn {
+  background: none; border: none; padding: 2px 0; cursor: pointer;
+  font-family: var(--font-body); font-size: 12px; color: var(--ink-soft);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.habit-month { margin: 4px 0 8px 36px; padding: 10px 12px; background: #fff; border: 1px solid var(--rule); border-radius: 10px; }
+.mnav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.mnav .icon-btn { width: 30px; height: 30px; font-size: 18px; }
+.mgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.mcell {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-body); font-size: 13px; color: var(--ink-soft);
+  border-radius: 50%;
+}
+.mcell.wday { font-size: 11px; color: var(--ink-faint); aspect-ratio: auto; padding: 2px 0; }
+.mcell.empty { visibility: hidden; }
+.mcell.on { background: var(--accent); color: #fff; font-weight: bold; }
+.mcell.today { outline: 1.5px dashed var(--accent); outline-offset: -1.5px; }
+.mcell.future { color: var(--ink-faint); opacity: .5; }
 .empty-doodle {
   text-align: center; padding: var(--s5) var(--s2); color: var(--ink-soft);
 }
