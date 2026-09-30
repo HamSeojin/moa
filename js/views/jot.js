@@ -1,8 +1,8 @@
 // 모아 — 끄적 탭 (대충 입력 → LLM 다듬기 → 카드)
-import { store, todayKey } from '../store.js?v=1.4.5';
-import { chat, isConfigured } from '../llm.js?v=1.4.5';
-import { PROMPTS } from '../prompts.js?v=1.4.5';
-import { applyExtraction, extractWikilinks } from '../extract.js?v=1.4.5';
+import { store, todayKey } from '../store.js?v=1.4.6';
+import { chat, isConfigured } from '../llm.js?v=1.4.6';
+import { PROMPTS } from '../prompts.js?v=1.4.6';
+import { applyExtraction, extractWikilinks } from '../extract.js?v=1.4.6';
 
 function compressImage(file, maxDim = 800, quality = 0.72) {
   return new Promise((resolve, reject) => {
