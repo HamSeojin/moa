@@ -1,8 +1,8 @@
 // 모아 — 설정 탭 (LLM 제공자 · 구글 · 데이터 관리)
-import { store } from '../store.js?v=1.4.8';
-import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js?v=1.4.8';
-import { MODELS, DEFAULT_MODELS } from '../models.js?v=1.4.8';
-import { appleSettings, calendarSource, testApple } from '../apple.js?v=1.4.8';
+import { store } from '../store.js?v=1.4.9';
+import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js?v=1.4.9';
+import { MODELS, DEFAULT_MODELS } from '../models.js?v=1.4.9';
+import { appleSettings, calendarSource, testApple } from '../apple.js?v=1.4.9';
 
 // 콤보박스 옵션 생성. 저장된 값이 목록에 없으면(기존 직접 입력) 맨 앞에 유지.
 function modelOptions(provider, current) {
@@ -124,7 +124,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.8 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.9 · 2026-10-01</div>
   `;
 
   const save = () => {
