@@ -1,7 +1,7 @@
 // 모아 — 탐색 탭 그래프 (SVG, 원형 레이아웃)
 // 노드: 엔트리(작은 점) · 사람 · 태그 · 장소 / 엣지: links[] + 동시 언급
 
-import { store } from './store.js?v=1.4.5';
+import { store } from './store.js?v=1.4.6';
 
 const NODE_COLORS = {
   entry: '#CBE6F8',
