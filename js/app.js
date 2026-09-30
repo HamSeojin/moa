@@ -1,11 +1,11 @@
 // 모아 — 탭 라우팅·초기화
-import { store } from './store.js?v=1.4.3';
-import { renderToday } from './views/today.js?v=1.4.3';
-import { renderJot } from './views/jot.js?v=1.4.3';
-import { renderHabit } from './views/habit.js?v=1.4.3';
-import { renderRecap } from './views/recap.js?v=1.4.3';
-import { renderExplore } from './views/explore.js?v=1.4.3';
-import { renderSettings } from './views/settings.js?v=1.4.3';
+import { store } from './store.js?v=1.4.4';
+import { renderToday } from './views/today.js?v=1.4.4';
+import { renderJot } from './views/jot.js?v=1.4.4';
+import { renderHabit } from './views/habit.js?v=1.4.4';
+import { renderRecap } from './views/recap.js?v=1.4.4';
+import { renderExplore } from './views/explore.js?v=1.4.4';
+import { renderSettings } from './views/settings.js?v=1.4.4';
 
 const VIEWS = {
   today: { el: 'view-today', render: renderToday },
