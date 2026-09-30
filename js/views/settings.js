@@ -1,8 +1,8 @@
 // 모아 — 설정 탭 (LLM 제공자 · 구글 · 데이터 관리)
-import { store } from '../store.js?v=1.4.2';
-import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js?v=1.4.2';
-import { MODELS, DEFAULT_MODELS } from '../models.js?v=1.4.2';
-import { appleSettings, calendarSource, testApple } from '../apple.js?v=1.4.2';
+import { store } from '../store.js?v=1.4.3';
+import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js?v=1.4.3';
+import { MODELS, DEFAULT_MODELS } from '../models.js?v=1.4.3';
+import { appleSettings, calendarSource, testApple } from '../apple.js?v=1.4.3';
 
 // 콤보박스 옵션 생성. 저장된 값이 목록에 없으면(기존 직접 입력) 맨 앞에 유지.
 function modelOptions(provider, current) {
@@ -63,8 +63,8 @@ export function renderSettings(el) {
         <select id="set-gemini-model" class="input mono">${modelOptions('gemini', s.geminiModel || DEFAULT_MODELS.gemini)}</select>
       </div>
       <div class="row" style="margin-top:10px">
-        <button class="btn" id="set-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
-        <span id="set-test-msg" class="muted" style="font-size:14px"></span>
+        <button class="btn" id="set-test" style="font-size:14px;padding:8px 18px;white-space:nowrap;flex-shrink:0">🔌 연결 테스트</button>
+        <span id="set-test-msg" class="muted" style="font-size:14px;word-break:keep-all"></span>
       </div>
       <div class="hand-note">오늘 LLM 호출: ${todayUsage()}회</div>
     </div>
@@ -106,8 +106,8 @@ export function renderSettings(el) {
         <input id="set-apple-proxy" class="input mono" placeholder="https://moa-apple.xxx.workers.dev" value="${appleSettings().proxy || 'https://moa-apple.813nanalove.workers.dev'}">
       </div>
       <div class="row" style="margin-top:10px">
-        <button class="btn" id="set-apple-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
-        <span id="set-apple-test-msg" class="muted" style="font-size:14px"></span>
+        <button class="btn" id="set-apple-test" style="font-size:14px;padding:8px 18px;white-space:nowrap;flex-shrink:0">🔌 연결 테스트</button>
+        <span id="set-apple-test-msg" class="muted" style="font-size:14px;word-break:keep-all"></span>
       </div>
       <div class="notice">앱 암호는 appleid.apple.com → 로그인 및 보안 → 앱 암호에서 발급해 (언제든 폐기 가능). 프록시 배포 방법은 README의 Apple 캘린더 섹션 참조. 앱 암호는 이 기기에만 저장돼요.</div>
     </div>
@@ -124,7 +124,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.2 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.3 · 2026-09-30</div>
   `;
 
   const save = () => {
