@@ -1,10 +1,10 @@
 // 모아 — 오늘 탭 (타임라인)
-import { store, todayKey } from '../store.js?v=1.4.5';
-import { chat, isConfigured } from '../llm.js?v=1.4.5';
-import { PROMPTS } from '../prompts.js?v=1.4.5';
-import { fetchTodayEvents, fetchMailCandidates, googleClientId } from '../google.js?v=1.4.5';
-import { fetchAppleTodayEvents, appleConfigured, calendarSource } from '../apple.js?v=1.4.5';
-import { navigate } from '../app.js?v=1.4.5';
+import { store, todayKey } from '../store.js?v=1.4.6';
+import { chat, isConfigured } from '../llm.js?v=1.4.6';
+import { PROMPTS } from '../prompts.js?v=1.4.6';
+import { fetchTodayEvents, fetchMailCandidates, googleClientId } from '../google.js?v=1.4.6';
+import { fetchAppleTodayEvents, appleConfigured, calendarSource } from '../apple.js?v=1.4.6';
+import { navigate } from '../app.js?v=1.4.6';
 
 function fmtTime(iso) {
   const d = new Date(iso);
