@@ -1,5 +1,5 @@
 // 모아 — 해빗 탭 (설정에서 사용자가 직접 추가)
-import { store, todayKey } from '../store.js?v=1.4.4';
+import { store, todayKey } from '../store.js?v=1.4.5';
 
 function streak(h) {
   const checks = h.checks || {};
