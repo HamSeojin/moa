@@ -22,8 +22,10 @@ export const MODELS = {
     { id: 'claude-fable-5', label: 'Fable 5 · 최고' },
   ],
   gemini: [
-    { id: 'gemini-2.5-flash', label: '2.5 Flash · 기본' },
-    { id: 'gemini-2.5-flash-lite', label: '2.5 Flash-Lite · 경량' },
+    { id: 'gemini-3.5-flash', label: '3.5 Flash · 무료 · 최신' },
+    { id: 'gemini-3.1-flash-lite', label: '3.1 Flash-Lite · 무료 · 경량' },
+    { id: 'gemini-2.5-flash', label: '2.5 Flash · 무료' },
+    { id: 'gemini-2.5-flash-lite', label: '2.5 Flash-Lite · 무료 · 경량' },
     { id: 'gemini-2.5-pro', label: '2.5 Pro · 고성능' },
     { id: 'gemini-3-flash-preview', label: '3 Flash · 프리뷰' },
   ],
