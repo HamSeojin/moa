@@ -1,7 +1,7 @@
 // 모아 — 회고 탭 (하루 카드 · 주간 카드)
-import { store, todayKey } from '../store.js?v=1.4.5';
-import { chat, isConfigured } from '../llm.js?v=1.4.5';
-import { PROMPTS } from '../prompts.js?v=1.4.5';
+import { store, todayKey } from '../store.js?v=1.4.6';
+import { chat, isConfigured } from '../llm.js?v=1.4.6';
+import { PROMPTS } from '../prompts.js?v=1.4.6';
 
 function shiftKey(key, delta) {
   const [y, m, d] = key.split('-').map(Number);
