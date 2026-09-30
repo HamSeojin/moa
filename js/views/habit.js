@@ -1,5 +1,5 @@
 // 모아 — 해빗 탭 (설정에서 사용자가 직접 추가)
-import { store, todayKey } from '../store.js?v=1.4.5';
+import { store, todayKey } from '../store.js?v=1.4.6';
 
 function streak(h) {
   const checks = h.checks || {};
@@ -11,6 +11,19 @@ function streak(h) {
     else break;
   }
   return n;
+}
+
+// 최근 7일 (오늘 포함) 체크 현황
+function last7(h) {
+  const checks = h.checks || {};
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const k = todayKey(d);
+    days.push({ key: k, done: !!checks[k], label: '일월화수목금토'[d.getDay()], today: i === 0 });
+  }
+  return days;
 }
 
 export function renderHabit(el) {
@@ -37,11 +50,19 @@ export function renderHabit(el) {
     list.innerHTML = habits.map((h) => {
       const done = !!h.checks?.[key];
       const s = streak(h);
-      return `<div class="habit-row ${done ? 'done' : ''}" data-id="${h.id}">
-        <div class="habit-check">${done ? '✔' : ''}</div>
-        <div class="habit-name">${h.name}</div>
-        ${s > 1 ? `<div class="streak">${s}일째 🔥</div>` : ''}
-        <button class="icon-btn btn-del" data-id="${h.id}" style="width:34px;height:34px;font-size:15px" aria-label="삭제">✕</button>
+      const days = last7(h);
+      const weekDone = days.filter((d) => d.done).length;
+      return `<div class="habit-card" data-id="${h.id}">
+        <div class="habit-row ${done ? 'done' : ''}" data-id="${h.id}">
+          <div class="habit-check">${done ? '✔' : ''}</div>
+          <div class="habit-name">${h.name}</div>
+          ${s > 1 ? `<div class="streak">${s}일째 🔥</div>` : ''}
+          <button class="icon-btn btn-del" data-id="${h.id}" style="width:34px;height:34px;font-size:15px" aria-label="삭제">✕</button>
+        </div>
+        <div class="habit-week">
+          ${days.map((d) => `<span class="hdot${d.done ? ' on' : ''}${d.today ? ' today' : ''}">${d.label}</span>`).join('')}
+          <span class="muted" style="font-size:12px;margin-left:4px;white-space:nowrap">최근 7일 ${weekDone}/7</span>
+        </div>
       </div>`;
     }).join('');
 
