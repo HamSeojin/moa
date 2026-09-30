@@ -2,10 +2,10 @@
 // 사용법: chat({ system, messages: [{role, content}], json: true }) → 텍스트 반환
 // 제공자는 설정 탭에서 사용자가 선택. 키는 localStorage에만 저장 (개인용).
 
-import { store } from './store.js?v=1.4.3';
-import { callOpenAI } from './providers/openai.js?v=1.4.3';
-import { callClaude } from './providers/claude.js?v=1.4.3';
-import { callGemini } from './providers/gemini.js?v=1.4.3';
+import { store } from './store.js?v=1.4.4';
+import { callOpenAI } from './providers/openai.js?v=1.4.4';
+import { callClaude } from './providers/claude.js?v=1.4.4';
+import { callGemini } from './providers/gemini.js?v=1.4.4';
 
 export const PROVIDERS = {
   openai: { label: 'OpenAI', call: callOpenAI, needsProxy: false },
