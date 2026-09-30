@@ -2,7 +2,7 @@
 // 브라우저 직접 호출 불가 (CORS 미지원) → Cloudflare Worker 프록시 경유.
 // 설정 탭에서 Apple ID + 앱 암호 + 프록시 URL 입력.
 
-import { store, todayKey } from './store.js?v=1.4.2';
+import { store, todayKey } from './store.js?v=1.4.3';
 
 export function appleSettings() {
   const s = store.settings();
