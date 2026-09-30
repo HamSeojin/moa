@@ -5,10 +5,12 @@
 import { store } from './store.js';
 import { callOpenAI } from './providers/openai.js';
 import { callClaude } from './providers/claude.js';
+import { callGemini } from './providers/gemini.js';
 
 export const PROVIDERS = {
   openai: { label: 'OpenAI', call: callOpenAI, needsProxy: false },
   claude: { label: 'Claude', call: callClaude, needsProxy: true },
+  gemini: { label: 'Gemini', call: callGemini, needsProxy: false },
 };
 
 export function currentProvider() {

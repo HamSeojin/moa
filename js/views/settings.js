@@ -27,6 +27,10 @@ export function renderSettings(el) {
         <input id="set-claude-key" type="password" class="input mono" placeholder="sk-ant-..." value="${s.apiKeys?.claude || ''}">
       </div>
       <div class="field">
+        <label>Gemini API 키 <span class="muted">(AI Studio에서 발급)</span></label>
+        <input id="set-gemini-key" type="password" class="input mono" placeholder="AIza..." value="${s.apiKeys?.gemini || ''}">
+      </div>
+      <div class="field">
         <label>Claude 프록시 URL <span class="muted">(Cloudflare Workers 등)</span></label>
         <input id="set-proxy" class="input mono" placeholder="https://moa-claude.xxx.workers.dev" value="${s.claudeProxy || ''}">
       </div>
@@ -38,6 +42,10 @@ export function renderSettings(el) {
       <div class="field">
         <label>Claude 모델</label>
         <input id="set-claude-model" class="input mono" value="${s.claudeModel || 'claude-sonnet-4-20250514'}">
+      </div>
+      <div class="field">
+        <label>Gemini 모델</label>
+        <input id="set-gemini-model" class="input mono" value="${s.geminiModel || 'gemini-2.5-flash'}">
       </div>
       <div class="row" style="margin-top:10px">
         <button class="btn" id="set-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
@@ -67,7 +75,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.1.0 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.2.0 · 2026-09-30</div>
   `;
 
   const save = () => {
@@ -76,10 +84,12 @@ export function renderSettings(el) {
     cur.apiKeys = {
       openai: el.querySelector('#set-openai-key').value.trim(),
       claude: el.querySelector('#set-claude-key').value.trim(),
+      gemini: el.querySelector('#set-gemini-key').value.trim(),
     };
     cur.claudeProxy = el.querySelector('#set-proxy').value.trim();
     cur.openaiModel = el.querySelector('#set-openai-model').value.trim();
     cur.claudeModel = el.querySelector('#set-claude-model').value.trim();
+    cur.geminiModel = el.querySelector('#set-gemini-model').value.trim();
     cur.googleClientId = el.querySelector('#set-gid').value.trim();
     store.saveSettings(cur);
   };
