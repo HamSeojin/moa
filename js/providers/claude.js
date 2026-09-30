@@ -1,6 +1,6 @@
 // Claude 제공자 — 브라우저 직접 호출 불가 (api.anthropic.com은 CORS 미지원)
 // 반드시 프록시(Cloudflare Workers 등)를 거쳐야 한다. README의 예제 참조.
-import { DEFAULT_MODELS } from '../models.js?v=1.4.8';
+import { DEFAULT_MODELS } from '../models.js?v=1.4.9';
 
 export async function callClaude({ key, proxy, system, messages, settings }) {
   const base = (proxy || '').replace(/\/$/, '');
