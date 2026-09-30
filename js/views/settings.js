@@ -1,6 +1,20 @@
 // 모아 — 설정 탭 (LLM 제공자 · 구글 · 데이터 관리)
 import { store } from '../store.js';
 import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js';
+import { MODELS, DEFAULT_MODELS } from '../models.js';
+
+// 콤보박스 옵션 생성. 저장된 값이 목록에 없으면(기존 직접 입력) 맨 앞에 유지.
+function modelOptions(provider, current) {
+  const list = MODELS[provider];
+  const ids = new Set(list.map((m) => m.id));
+  let opts = list
+    .map((m) => `<option value="${m.id}"${m.id === current ? ' selected' : ''}>${m.label}</option>`)
+    .join('');
+  if (current && !ids.has(current)) {
+    opts = `<option value="${current}" selected>${current} (기존 설정)</option>` + opts;
+  }
+  return opts;
+}
 
 export function renderSettings(el) {
   const s = store.settings();
@@ -37,15 +51,15 @@ export function renderSettings(el) {
       <div class="notice">Claude는 브라우저에서 직접 호출할 수 없어요 (CORS 미지원). README의 워커 예제로 5분이면 프록시를 만들 수 있어요. 키는 이 기기에만 저장돼요.</div>
       <div class="field">
         <label>OpenAI 모델</label>
-        <input id="set-openai-model" class="input mono" value="${s.openaiModel || 'gpt-4o-mini'}">
+        <select id="set-openai-model" class="input mono">${modelOptions('openai', s.openaiModel || DEFAULT_MODELS.openai)}</select>
       </div>
       <div class="field">
         <label>Claude 모델</label>
-        <input id="set-claude-model" class="input mono" value="${s.claudeModel || 'claude-sonnet-4-20250514'}">
+        <select id="set-claude-model" class="input mono">${modelOptions('claude', s.claudeModel || DEFAULT_MODELS.claude)}</select>
       </div>
       <div class="field">
         <label>Gemini 모델</label>
-        <input id="set-gemini-model" class="input mono" value="${s.geminiModel || 'gemini-2.5-flash'}">
+        <select id="set-gemini-model" class="input mono">${modelOptions('gemini', s.geminiModel || DEFAULT_MODELS.gemini)}</select>
       </div>
       <div class="row" style="margin-top:10px">
         <button class="btn" id="set-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
@@ -75,7 +89,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.2.0 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.3.0 · 2026-09-30</div>
   `;
 
   const save = () => {
@@ -93,7 +107,7 @@ export function renderSettings(el) {
     cur.googleClientId = el.querySelector('#set-gid').value.trim();
     store.saveSettings(cur);
   };
-  el.querySelectorAll('input').forEach((i) => i.addEventListener('change', save));
+  el.querySelectorAll('input, select').forEach((i) => i.addEventListener('change', save));
 
   const msg = el.querySelector('#set-msg');
   el.querySelector('#set-test').addEventListener('click', async () => {

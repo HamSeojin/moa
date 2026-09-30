@@ -1,4 +1,6 @@
 // OpenAI 제공자 — 브라우저에서 직접 호출 가능
+import { DEFAULT_MODELS } from '../models.js';
+
 export async function callOpenAI({ key, system, messages, json, settings }) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -7,7 +9,7 @@ export async function callOpenAI({ key, system, messages, json, settings }) {
       authorization: `Bearer ${key}`,
     },
     body: JSON.stringify({
-      model: settings.openaiModel || 'gpt-4o-mini',
+      model: settings.openaiModel || DEFAULT_MODELS.openai,
       messages: [{ role: 'system', content: system }, ...messages],
       ...(json ? { response_format: { type: 'json_object' } } : {}),
     }),

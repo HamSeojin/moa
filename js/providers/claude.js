@@ -1,5 +1,7 @@
 // Claude 제공자 — 브라우저 직접 호출 불가 (api.anthropic.com은 CORS 미지원)
 // 반드시 프록시(Cloudflare Workers 등)를 거쳐야 한다. README의 예제 참조.
+import { DEFAULT_MODELS } from '../models.js';
+
 export async function callClaude({ key, proxy, system, messages, settings }) {
   const base = (proxy || '').replace(/\/$/, '');
   const res = await fetch(base + '/v1/messages', {
@@ -10,7 +12,7 @@ export async function callClaude({ key, proxy, system, messages, settings }) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: settings.claudeModel || 'claude-sonnet-4-20250514',
+      model: settings.claudeModel || DEFAULT_MODELS.claude,
       max_tokens: 1500,
       system,
       messages: messages.map((m) => ({

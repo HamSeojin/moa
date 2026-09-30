@@ -1,6 +1,8 @@
 // Gemini 제공자 — 브라우저에서 직접 호출 가능 (API 키 방식, CORS 지원)
+import { DEFAULT_MODELS } from '../models.js';
+
 export async function callGemini({ key, system, messages, json, settings }) {
-  const model = settings.geminiModel || 'gemini-2.5-flash';
+  const model = settings.geminiModel || DEFAULT_MODELS.gemini;
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
