@@ -1,5 +1,5 @@
 // OpenAI 제공자 — 브라우저에서 직접 호출 가능
-import { DEFAULT_MODELS } from '../models.js';
+import { DEFAULT_MODELS } from '../models.js?v=1.4.2';
 
 export async function callOpenAI({ key, system, messages, json, settings }) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
