@@ -1,5 +1,5 @@
 // 모아 — 해빗 탭 (설정에서 사용자가 직접 추가)
-import { store, todayKey } from '../store.js?v=1.4.6';
+import { store, todayKey } from '../store.js?v=1.4.7';
 
 function streak(h) {
   const checks = h.checks || {};
@@ -13,7 +13,40 @@ function streak(h) {
   return n;
 }
 
-// 최근 7일 (오늘 포함) 체크 현황
+// 펼친 월별 기록 상태 (리렌더 사이 유지)
+let expandedId = null;
+let viewY = new Date().getFullYear();
+let viewM = new Date().getMonth();
+
+// 월별 달력 HTML
+function monthGrid(h, y, m) {
+  const checks = h.checks || {};
+  const startDay = new Date(y, m, 1).getDay();
+  const dim = new Date(y, m + 1, 0).getDate();
+  const todayK = todayKey();
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  let monthDone = 0;
+  let cells = '';
+  for (let i = 0; i < startDay; i++) cells += '<span class="mcell empty"></span>';
+  for (let d = 1; d <= dim; d++) {
+    const dt = new Date(y, m, d);
+    const k = todayKey(dt);
+    const done = !!checks[k];
+    if (done) monthDone++;
+    cells += `<span class="mcell${done ? ' on' : ''}${k === todayK ? ' today' : ''}${dt > now ? ' future' : ''}">${d}</span>`;
+  }
+  const total = Object.keys(checks).length;
+  return `
+    <div class="mnav">
+      <button class="icon-btn mprev" aria-label="이전 달">‹</button>
+      <span class="hand-note" style="margin:0">${y}년 ${m + 1}월 · ${monthDone}/${dim}일 · 전체 ${total}일</span>
+      <button class="icon-btn mnext" aria-label="다음 달">›</button>
+    </div>
+    <div class="mgrid">
+      ${'일월화수목금토'.split('').map((w) => `<span class="mcell wday">${w}</span>`).join('')}
+      ${cells}
+    </div>`;
+}
 function last7(h) {
   const checks = h.checks || {};
   const days = [];
@@ -52,6 +85,7 @@ export function renderHabit(el) {
       const s = streak(h);
       const days = last7(h);
       const weekDone = days.filter((d) => d.done).length;
+      const expanded = expandedId === h.id;
       return `<div class="habit-card" data-id="${h.id}">
         <div class="habit-row ${done ? 'done' : ''}" data-id="${h.id}">
           <div class="habit-check">${done ? '✔' : ''}</div>
@@ -61,8 +95,9 @@ export function renderHabit(el) {
         </div>
         <div class="habit-week">
           ${days.map((d) => `<span class="hdot${d.done ? ' on' : ''}${d.today ? ' today' : ''}">${d.label}</span>`).join('')}
-          <span class="muted" style="font-size:12px;margin-left:4px;white-space:nowrap">최근 7일 ${weekDone}/7</span>
+          <button class="link-btn hist-toggle" data-id="${h.id}" style="white-space:nowrap">${expanded ? '접기 ▲' : `기록 전체 보기 (${weekDone}/7)`}</button>
         </div>
+        ${expanded ? `<div class="habit-month">${monthGrid(h, viewY, viewM)}</div>` : ''}
       </div>`;
     }).join('');
 
@@ -83,6 +118,32 @@ export function renderHabit(el) {
       b.addEventListener('click', () => {
         if (!confirm('이 해빗을 뽑아낼까?')) return;
         store.saveHabits(store.habits().filter((h) => h.id !== b.dataset.id));
+        renderHabit(el);
+      });
+    });
+    list.querySelectorAll('.hist-toggle').forEach((b) => {
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const id = b.dataset.id;
+        if (expandedId === id) { expandedId = null; }
+        else {
+          expandedId = id;
+          const t = new Date(); viewY = t.getFullYear(); viewM = t.getMonth();
+        }
+        renderHabit(el);
+      });
+    });
+    list.querySelectorAll('.mprev').forEach((b) => {
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        viewM--; if (viewM < 0) { viewM = 11; viewY--; }
+        renderHabit(el);
+      });
+    });
+    list.querySelectorAll('.mnext').forEach((b) => {
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        viewM++; if (viewM > 11) { viewM = 0; viewY++; }
         renderHabit(el);
       });
     });
