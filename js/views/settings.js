@@ -103,7 +103,7 @@ export function renderSettings(el) {
       </div>
       <div class="field">
         <label>CalDAV 프록시 URL <span class="muted">(Cloudflare Workers)</span></label>
-        <input id="set-apple-proxy" class="input mono" placeholder="https://moa-apple.xxx.workers.dev" value="${appleSettings().proxy}">
+        <input id="set-apple-proxy" class="input mono" placeholder="https://moa-apple.xxx.workers.dev" value="${appleSettings().proxy || 'https://moa-apple.813nanalove.workers.dev'}">
       </div>
       <div class="row" style="margin-top:10px">
         <button class="btn" id="set-apple-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
@@ -124,7 +124,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.0 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.1 · 2026-09-30</div>
   `;
 
   const save = () => {
