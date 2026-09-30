@@ -1,7 +1,7 @@
 // 모아 — 탐색 탭 (검색 · 그래프 · 백링크)
-import { store } from '../store.js?v=1.4.5';
-import { buildGraph, renderGraph } from '../graph.js?v=1.4.5';
-import { backlinks } from '../extract.js?v=1.4.5';
+import { store } from '../store.js?v=1.4.6';
+import { buildGraph, renderGraph } from '../graph.js?v=1.4.6';
+import { backlinks } from '../extract.js?v=1.4.6';
 
 export function renderExplore(el) {
   el.innerHTML = `
