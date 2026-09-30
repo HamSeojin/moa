@@ -74,6 +74,17 @@ export default {
 3. 클라이언트 ID를 설정 탭에 입력
 4. 범위: `calendar.readonly`, `gmail.readonly`
 
+### Apple 캘린더 연동 (iCloud CalDAV)
+
+Apple은 브라우저 직접 호출을 CORS로 막으므로 Claude처럼 프록시 Worker가 필요해.
+`worker-apple-caldav.js`를 그대로 배포하면 됨 (비밀을 저장하지 않는 stateless 프록시).
+
+1. **앱 암호 발급**: appleid.apple.com → 로그인 및 보안 → 앱 암호 → 생성 (형식: `xxxx-xxxx-xxxx-xxxx`). 언제든 폐기 가능.
+2. **Worker 배포**: Cloudflare 대시보드 → Workers → Create → `worker-apple-caldav.js` 내용 붙여넣기 → Deploy.
+3. **설정 입력**: 모아 설정 탭 → 🍎 Apple 캘린더 → 가져오기 원본을 "Apple 캘린더"로 선택 → Apple ID·앱 암호·프록시 URL 입력 → 🔌 연결 테스트.
+
+참고: 앱 암호는 캘린더 전체 접근 권한이라, Worker는 읽기(REPORT)만 수행하지만 키 자체는 전체 권한임.
+
 ## 정직한 한계 (v1)
 
 - Claude는 프록시 없이 호출 불가 (위 예제 참조)

@@ -3,6 +3,7 @@ import { store, todayKey } from '../store.js';
 import { chat, isConfigured } from '../llm.js';
 import { PROMPTS } from '../prompts.js';
 import { fetchTodayEvents, fetchMailCandidates, googleClientId } from '../google.js';
+import { fetchAppleTodayEvents, appleConfigured, calendarSource } from '../apple.js';
 import { navigate } from '../app.js';
 
 function fmtTime(iso) {
@@ -101,10 +102,17 @@ export async function renderToday(el) {
 
   const msg = el.querySelector('#import-msg');
   el.querySelector('#btn-cal').addEventListener('click', async () => {
-    if (!googleClientId()) { msg.textContent = '설정 탭에서 Google 클라이언트 ID를 먼저 입력해줘!'; return; }
+    const src = calendarSource();
     msg.textContent = '캘린더 가져오는 중...';
     try {
-      const items = await fetchTodayEvents();
+      let items;
+      if (src === 'apple') {
+        if (!appleConfigured()) throw new Error('설정 탭에서 Apple ID·앱 암호·프록시 URL을 먼저 입력해줘!');
+        items = await fetchAppleTodayEvents();
+      } else {
+        if (!googleClientId()) throw new Error('설정 탭에서 Google 클라이언트 ID를 먼저 입력해줘!');
+        items = await fetchTodayEvents();
+      }
       const existing = new Set(store.entries().map((e) => e.sourceId).filter(Boolean));
       let n = 0;
       for (const it of items) {

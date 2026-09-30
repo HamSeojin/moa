@@ -2,6 +2,7 @@
 import { store } from '../store.js';
 import { PROVIDERS, currentProvider, todayUsage, testConnection } from '../llm.js';
 import { MODELS, DEFAULT_MODELS } from '../models.js';
+import { appleSettings, calendarSource, testApple } from '../apple.js';
 
 // 콤보박스 옵션 생성. 저장된 값이 목록에 없으면(기존 직접 입력) 맨 앞에 유지.
 function modelOptions(provider, current) {
@@ -77,6 +78,40 @@ export function renderSettings(el) {
       <div class="notice">Google Cloud Console에서 웹용 OAuth 클라이언트 ID를 발급받아 입력해줘. 승인된 JavaScript 원본에 이 앱 주소를 등록해야 해. 범위: 캘린더 읽기 · Gmail 읽기.</div>
     </div>
 
+    <div class="sticker tape">
+      <div class="card-title">🍎 Apple 캘린더</div>
+      <div class="field">
+        <label>가져오기 원본</label>
+        <div class="radio-cards">
+          <label class="radio-card">
+            <input type="radio" name="calsrc" value="google" ${calendarSource() !== 'apple' ? 'checked' : ''}>
+            Google 캘린더
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="calsrc" value="apple" ${calendarSource() === 'apple' ? 'checked' : ''}>
+            Apple 캘린더
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Apple ID (이메일)</label>
+        <input id="set-apple-id" class="input mono" placeholder="you@icloud.com" value="${appleSettings().appleId}">
+      </div>
+      <div class="field">
+        <label>앱 암호</label>
+        <input id="set-apple-pw" type="password" class="input mono" placeholder="xxxx-xxxx-xxxx-xxxx" value="${appleSettings().appPassword}">
+      </div>
+      <div class="field">
+        <label>CalDAV 프록시 URL <span class="muted">(Cloudflare Workers)</span></label>
+        <input id="set-apple-proxy" class="input mono" placeholder="https://moa-apple.xxx.workers.dev" value="${appleSettings().proxy}">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="set-apple-test" style="font-size:14px;padding:8px 18px">🔌 연결 테스트</button>
+        <span id="set-apple-test-msg" class="muted" style="font-size:14px"></span>
+      </div>
+      <div class="notice">앱 암호는 appleid.apple.com → 로그인 및 보안 → 앱 암호에서 발급해 (언제든 폐기 가능). 프록시 배포 방법은 README의 Apple 캘린더 섹션 참조. 앱 암호는 이 기기에만 저장돼요.</div>
+    </div>
+
     <div class="sticker tape tape-mint">
       <div class="card-title">💾 데이터</div>
       <div class="spacer"></div>
@@ -89,7 +124,7 @@ export function renderSettings(el) {
       <div id="set-msg" class="muted"></div>
     </div>
 
-    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.3.0 · 2026-09-30</div>
+    <div class="muted" style="text-align:center;margin:22px 0 30px">moa v1.4.0 · 2026-09-30</div>
   `;
 
   const save = () => {
@@ -105,11 +140,32 @@ export function renderSettings(el) {
     cur.claudeModel = el.querySelector('#set-claude-model').value.trim();
     cur.geminiModel = el.querySelector('#set-gemini-model').value.trim();
     cur.googleClientId = el.querySelector('#set-gid').value.trim();
+    cur.calendarSource = el.querySelector('input[name="calsrc"]:checked').value;
+    cur.appleId = el.querySelector('#set-apple-id').value.trim();
+    cur.appleAppPassword = el.querySelector('#set-apple-pw').value.trim();
+    cur.appleProxy = el.querySelector('#set-apple-proxy').value.trim();
     store.saveSettings(cur);
   };
   el.querySelectorAll('input, select').forEach((i) => i.addEventListener('change', save));
 
   const msg = el.querySelector('#set-msg');
+  el.querySelector('#set-apple-test').addEventListener('click', async () => {
+    save();
+    const btn = el.querySelector('#set-apple-test');
+    const tmsg = el.querySelector('#set-apple-test-msg');
+    btn.disabled = true;
+    tmsg.textContent = '확인 중...';
+    try {
+      const cals = await testApple();
+      tmsg.textContent = cals.length
+        ? `✅ 캘린더 ${cals.length}개 연결됨 (${cals.slice(0, 3).join(' · ')}${cals.length > 3 ? '…' : ''})`
+        : '✅ 연결됐지만 캘린더가 없어.';
+    } catch (e) {
+      tmsg.textContent = '❌ ' + e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
   el.querySelector('#set-test').addEventListener('click', async () => {
     save();
     const btn = el.querySelector('#set-test');
