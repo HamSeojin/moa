@@ -1,11 +1,11 @@
 // 모아 — 탭 라우팅·초기화
-import { store } from './store.js?v=1.4.7';
-import { renderToday } from './views/today.js?v=1.4.7';
-import { renderJot } from './views/jot.js?v=1.4.7';
-import { renderHabit } from './views/habit.js?v=1.4.7';
-import { renderRecap } from './views/recap.js?v=1.4.7';
-import { renderExplore } from './views/explore.js?v=1.4.7';
-import { renderSettings } from './views/settings.js?v=1.4.7';
+import { store } from './store.js?v=1.4.8';
+import { renderToday } from './views/today.js?v=1.4.8';
+import { renderJot } from './views/jot.js?v=1.4.8';
+import { renderHabit } from './views/habit.js?v=1.4.8';
+import { renderRecap } from './views/recap.js?v=1.4.8';
+import { renderExplore } from './views/explore.js?v=1.4.8';
+import { renderSettings } from './views/settings.js?v=1.4.8';
 
 const VIEWS = {
   today: { el: 'view-today', render: renderToday },
@@ -33,6 +33,7 @@ export function navigate(name) {
     console.error('[moa] 렌더 실패:', name, e);
   }
   window.scrollTo(0, 0);
+  document.getElementById('views').scrollTo(0, 0);
 }
 
 document.querySelectorAll('[data-tab]').forEach((el) => {
